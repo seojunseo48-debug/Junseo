@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>연습용 계정 메모</title>
+<style>
+  body{
+    margin:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+  .card{
+    width:90%;
+    max-width:420px;
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 15px 30px rgba(0,0,0,.25);
+  }
+  h2{
+    margin:0 0 6px;
+    text-align:center;
+  }
+  .sub{
+    text-align:center;
+    font-size:13px;
+    color:#888;
+    margin-bottom:16px;
+  }
+  .row{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  input{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:1.8px solid #ddd;
+    font-size:15px;
+    outline:none;
+  }
+  input:focus{
+    border-color:#667eea;
+  }
+  button{
+    padding:12px 14px;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    background:#667eea;
+    color:#fff;
+    cursor:pointer;
+  }
+  button:hover{ opacity:.9; }
+  hr{
+    border:none;
+    border-top:1px dashed #ddd;
+    margin:16px 0;
+  }
+  ul{
+    list-style:none;
+    padding:0;
+    margin:10px 0 0;
+  }
+  li{
+    background:#f7f7fb;
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+  }
+  .del{
+    background:#ff5a5a;
+    font-size:13px;
+    padding:6px 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>스킨 케이스 무료 지급</h2>
+  <div class="sub"></div>
+
+  <!-- 아이디 / 비번 저장 -->
+  <div class="row">
+    <input id="dataInput" placeholder="아이디 / 비밀번호 입력">
+    <button onclick="save()">저장</button>
+  </div>
+
+  <hr>
+
+  <!-- 마스터 비번 -->
+  <div class="row">
+    <input type="password" id="masterInput" placeholder="마스터 비밀번호">
+    <button onclick="showList()">보기</button>
+  </div>
+
+  <ul id="list"></ul>
+</div>
+
+<script>
+  const MASTER = "0830";
+
+  function save(){
+    const v = document.getElementById("dataInput").value;
+    if(!v) return alert("내용 입력해");
+    let arr = JSON.parse(localStorage.getItem("vault")) || [];
+    arr.push(v);
+    localStorage.setItem("vault", JSON.stringify(arr));
+    document.getElementById("dataInput").value="";
+  }
+
+  function showList(){
+    const m = document.getElementById("masterInput").value;
+    if(m !== MASTER) return alert("마스터 비밀번호 틀림");
+    const ul = document.getElementById("list");
+    ul.innerHTML="";
+    let arr = JSON.parse(localStorage.getItem("vault")) || [];
+    arr.forEach((v,i)=>{
+      ul.innerHTML += `
+        <li>
+          ${v}
+          <button class="del" onclick="del(${i})">삭제</button>
+        </li>`;
+    });
+  }
+
+  function del(i){
+    let arr = JSON.parse(localStorage.getItem("vault")) || [];
+    arr.splice(i,1);
+    localStorage.setItem("vault", JSON.stringify(arr));
+    showList();
+  }
+</script>
+
+</body>
+</html>
